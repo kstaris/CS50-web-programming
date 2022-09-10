@@ -1,0 +1,77 @@
+{% extends "auctions/layout.html" %}
+{% block body %}
+    {% if listing.category %}
+    Category: <a href="{% url 'subCategories' listing.category %}">{{listing.category}}</a>
+    {% endif %}
+    <hr>
+    <div id="listingTitleDiv">
+        <h1>{{listing.title}}</h1>
+        <span id="date">Created on {{listing.createDate}} by {{listing.seller}}</span>
+    </div>
+    <div id="listingMain">
+        <div class="listingListingImg">
+        {% if listing.imageImg %}
+            <img class="listingImg" src="{{listing.imageImg.url}}" alt="Image listing">
+        {% endif %}
+        </div>
+        <div id="listingMoney">
+            <span id="listingBid">{{bid}}</span> 
+            {% if not listing.closed %}
+            {% if won %}
+            <br>
+            <span class="alert alert-primary">You are the highest bider!</span>
+            {% endif %}
+            <div id="listingForms">
+                {% if error %}
+                <span class="alert alert-danger" >{{error}}</span>
+                {% endif %}
+                <form id="bidForm" action="{% url 'bid' listing.id %}" method="POST">
+                    {% csrf_token %}
+                    {{bidForm}}
+                    <input class="btn btn-primary" type="submit" value="Bid">
+                </form>
+                <form action="{% url 'watchlistAdd' listing.id %}" method="post">
+                    {% csrf_token %}
+                    {% if not watchlist %}
+                        <input class="btn btn-secondary" type="submit" value="Add to watchlist">
+                    {% else %}
+                        <input class="btn btn-secondary" type="submit" value="Remove from watchlist">
+                    {% endif %}
+                </form>
+            </div>
+            {% endif %}
+            {% if listing.closed %}
+            <div class="alert alert-success">
+            Listing closed.
+                {% if won %}
+                    You won!
+                {% endif %}
+            </div>
+            {% endif %}
+        </div> 
+    </div>
+    <div id="listingDescription">
+    <b>Description:</b> <br>
+    {{listing.description}}
+    </div>
+    <form action="{% url 'close' listing.id %}" method="post">
+        {% csrf_token %}
+        {% if close %}
+            <input class="btn btn-danger" type="submit" value="Close">
+        {% endif %}
+    </form>
+    <hr>
+    <h2>Comments:</h2>
+    <form action="{% url 'comment' listing.id %}" method="post">
+        {% csrf_token %}
+        {{comment}}
+        <input class="btn btn-primary" type="submit" value="Comment">
+    </form>
+    <br>
+    {% for comment in comments %}
+    <div class="commentBlock">
+        {{comment.user_id}}-<br>
+        <span class="comment">{{comment.comment}}</span>
+    </div>
+    {% endfor %}
+{% endblock %}

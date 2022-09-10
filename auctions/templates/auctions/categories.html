@@ -1,0 +1,20 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+<h1>Categories</h1>
+{% if listings %}
+<h2>{{listings.0.category}}</h2>
+{% endif %}
+<ul>
+{% for category in categories %}
+    {% if category.category %}
+    <li><a href="categories/{{category.category}}">{{category.category}}</a></li>
+    {% endif %}
+{% endfor %}
+</ul>
+<div id="indexList">
+    {% for listing in listings %}
+        {% include "auctions/listingblock.html" %}
+    {% endfor %}
+    </div>
+{% endblock %}

@@ -1,0 +1,18 @@
+<div class="indexListing">
+    <a href="{% url 'listing' listing.id listing.title %}">
+        <div id="indexListingTitle">
+            {{listing.title}}
+        </div>
+        <div class="indexListingImg" >
+            {% if listing.imageImg %}
+                <img class="indexListingImgImg"src="{{listing.imageImg.url}}" alt="Image listing">
+            {% endif %}
+        </div>
+        <div id="indexDescription">
+            {{listing.description}}   
+        </div>
+        <div id="indexPrice">
+            €{{listing.bids_set.all.last.bid}} 
+        </div>
+    </a>
+</div>

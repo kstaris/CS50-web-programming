@@ -1,0 +1,159 @@
+body {
+    padding: 10px;
+    background-color: rgba(171, 207, 203, 0.918);
+    max-width: 85%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 50px;
+}
+.indexListingImg{
+    display: flex;
+    margin-left: auto;
+    margin-right: auto;
+    width: 300px;
+    height: 200px;
+}
+.listingImg{
+    object-fit: contain;
+    max-width: 100%;
+    max-height: 100%;
+    align-content: center;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: auto;
+    margin-bottom: auto;
+    border-radius: 50px;
+}
+.indexListingImgImg{
+    object-fit: contain;
+    max-width: 100%;
+    max-height: 100%;
+    align-content: center;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: auto;
+    margin-bottom: auto;
+    border-radius: 50px;
+}
+.indexListing{
+    display: block;
+    margin: 2rem;
+    background-color: rgba(255, 215, 86, 0.699);
+    border-radius: 80px;
+    border-style: solid;
+    border-width: 5px;
+    border-color: rgb(48, 7, 7);
+}
+
+.indexListing:hover{
+    background-color: rgb(247, 171, 7);
+}
+#indexList{
+    display:flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+#indexListingTitle{
+    font-size: 50px;
+    text-decoration: none;
+    text-align: center;
+    width: 300px;
+    word-wrap: break-word;
+}
+#indexPrice{
+    font-size: 40px;
+    text-align: center;
+}
+a:hover{
+    text-decoration: none;
+}
+#indexDescription{
+    color: grey;
+    text-align: center;
+    font-size: 20px;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    width: 300px;
+    word-wrap: break-word;
+    margin-left: auto;
+    margin-right: auto;
+    overflow: hidden;
+    max-height: 5.5rem;
+    text-overflow: ellipsis;
+}
+ #listingTitleDiv{
+    display: flex;
+ }
+ #date{
+    margin-top: auto;
+    margin-left: 1rem;
+    margin-bottom: 0.5rem;
+ }
+ #listingBid{
+    font-size: 100px;
+ }
+ #listingMain{
+    display: flex;
+    flex-wrap: wrap;
+ }
+ #listingForms{
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    margin-top: auto;
+    margin-bottom: auto;
+    flex-wrap: wrap;
+ }
+ .bid{
+    width:8rem;
+ }
+ #bidForm{
+    display: flex;
+ }
+ .btn{
+    margin-left:0.5rem;
+    margin-right: 0.5rem;
+    margin-top: 0.5rem;
+ }
+ .listingListingImg{
+    display: flex;
+    min-width: 200px;
+    max-width: 500px;
+    max-height: 500px;
+}
+#listingMoney{
+    margin-top:auto;
+    margin-bottom: auto;
+}
+#listingDescription{
+    margin-left: 1rem;
+    word-wrap: break-word;
+}
+#createForm{
+    display: flex;
+    flex-direction: column;
+}
+.form-control{
+    margin-top: auto;
+}
+.comment{
+    font-size: 1.5rem;
+}
+.commentBlock{
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 5px;
+    padding: 5px;
+    border-color: rgba(128, 128, 128, 0.466);
+}
+.alert-success{
+    font-size: 50px;
+}
+.alert-primary{
+    display: flex;
+    width: 15rem;
+    margin-top: 0.5rem;
+    margin-bottom: 1rem;
+    margin-left: auto;
+    margin-right: auto;
+}
