@@ -156,7 +156,7 @@ function view_email(email_id) {
     else{
       archive.style.display = 'none';
     }
-    //Reply
+    //Reply click
     document.querySelector('#reply').onclick = () => {
       compose_email();
       document.querySelector('#compose-recipients').value = email.sender;
