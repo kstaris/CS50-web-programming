@@ -85,8 +85,8 @@ function send_email() {
   .then(response => response.json())
   .then(result => {
     console.log(result);
-  }).then(load_mailbox('sent'));
-  load_mailbox('sent');
+  }).then (() => {
+    load_mailbox('sent')});
   return false;
   } 
 
