@@ -1,3 +1,31 @@
 textarea {
     min-height: 400px;
 }
+.email{
+    border-style: solid;
+    border-width: 1px;
+    height: 2rem;
+
+}
+.time{
+    color: gray;
+    float: right;
+}
+.sender{
+    font-weight: bold;
+    min-width: 200px;
+    margin-right: 1rem;
+    float: left;
+    text-align: left;
+}
+.subject{
+    float: left;
+}
+.emailButton{
+    background-color: transparent;
+    border: none;
+    width: 100%;
+}
+.emailButton:focus{
+    outline: none;
+}
