@@ -1,0 +1,7 @@
+#newPost{
+    display: flex;
+    justify-content: center;
+    height: 6rem;
+    margin-left: auto;
+    margin-right: auto;
+}

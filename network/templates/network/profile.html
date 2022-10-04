@@ -1,0 +1,55 @@
+{% extends "network/layout.html" %}
+{% load static %}
+
+{% block body %}
+{{ request.user.id|json_script:"user_id" }}
+    <div><div id="profile" data-profile={{profile.id}}>Profile:{{profile.username}}</div>
+        <div id="followers">Followers: {{profile.followers}}</div>
+        <div>Followring: {{profile.following}}</div>
+        
+        {% if profile.username != user.username %}
+        <button id="follow">Follow</button>
+        <button id="unfollow">Unfollow</button>
+        {% endif %}
+        <div id='tweets' data-user={{user.id}}></div>
+        <div class="pagination">
+            <span class="step-links">
+    
+            </span>
+        </div>
+
+        <script type="text/babel" src="{% static 'network/display_tweets.js' %}"></script>
+        <script type="text/babel">
+            
+            function followStatus(status){
+                let profile = document.querySelector('#profile').dataset.profile;
+                fetch('/follow', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        status: status,
+                        followTo: profile
+                    })
+                })
+                .then(response => response.json())
+                .then(result => {
+                    console.log(result);
+                    document.querySelector('#followers').innerHTML = `Followers: ${result}`
+                })
+                return false;
+            }
+            let follow = document.querySelector('#follow')
+            let unfollow = document.querySelector('#unfollow')
+            console.log(follow)
+            console.log(unfollow)
+            if (follow && unfollow) {
+                follow.addEventListener('click', () => followStatus('follow'));
+                unfollow.addEventListener('click', () => followStatus('unfollow'));
+            }
+            console.log(`User: ${document.querySelector('#tweets').dataset.user}`)
+            display_tweets(document.querySelector('#profile').dataset.profile,1); 
+        </script>
+
+    </div>
+    
+
+{% endblock %}

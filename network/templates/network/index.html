@@ -1,0 +1,18 @@
+{% extends "network/layout.html" %}
+{% load static %}
+
+{% block body %}
+{{ request.user.id|json_script:"user_id" }}
+    <div id="app">
+        <div id="profile"></div>
+        
+    </div>
+    <div id='tweets' data-user="all"></div>
+    <div class="pagination">
+        <span class="step-links">
+
+        </span>
+    </div>
+    <script type="text/babel" src="{% static 'network/display_tweets.js' %}"></script>
+    <script type="text/babel" src="{% static 'network/index.js' %}"></script>
+{% endblock %}
