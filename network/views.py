@@ -2,7 +2,7 @@ from winreg import REG_QWORD
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError, models
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.urls import reverse
 import json
 from .models import User, Tweet, Like, Follower
@@ -28,11 +28,30 @@ def index(request):
     else:
         return render(request, "network/index.html")
 
-def profile(request, username):
-    profile = User.objects.filter(username = username).annotate(following=Count('follower'))
+def renderProfile(request, username):
+    print(username, file=sys.stdout)
+    if username == 'all' or username == 'following':
+        print(username, file=sys.stdout)
+        return redirect('index')
+    profile = User.objects.filter(id = username).annotate(following=Count('follower'))
     followers = Follower.objects.filter(user = profile[0])
     profile = profile.annotate(followers=Value(len(followers), output_field=models.CharField()))
-    return render(request, "network/profile.html", {'profile': profile[0]})
+    profile = profile[0]
+    if Follower.objects.filter(user = username, follower = request.user):
+        status = 'following'
+    else: 
+        status = 'notFollowing'
+    prof = {
+        'followers': profile.followers,
+        'following': profile.following,
+        'status': status,
+        'username': profile.username
+    }
+    return JsonResponse(prof, safe=False)
+
+@csrf_exempt
+def profile(request, username):
+    return render(request, 'network/index.html')
 
 @login_required
 @csrf_exempt
@@ -43,18 +62,16 @@ def follow(request):
         status = data.get('status')
         follows = Follower.objects.filter(follower = request.user.id, user = followTo)
         if int(followTo) != int(request.user.id):
-            if status == 'follow':
+            if status == 'notFollowing':
                 follow = Follower(
                     user = User.objects.filter(id = followTo)[0],
                     follower = request.user
                 )
                 follow.save()
-                number = len(Follower.objects.filter(user = followTo))
-                return JsonResponse(number, safe=False)
+                return JsonResponse('following', safe=False)
             else:
                 follows.delete()
-                number = len(Follower.objects.filter(user = followTo))
-                return JsonResponse(number, safe=False)
+                return JsonResponse('notFollowing', safe=False)
 
         else:
             return JsonResponse({'message': 'unsuccessful'})
@@ -77,7 +94,6 @@ def like(request):
             number = len(Like.objects.filter(tweet = tweet))
             return JsonResponse(number, safe=False)
         else:
-            
             Like.objects.filter(liker = liker, tweet = tweet).delete()
             number = len(Like.objects.filter(tweet = tweet))
             return JsonResponse(number, safe=False)
@@ -89,18 +105,11 @@ def like(request):
 def edit(request):
     if request.method == "POST":
         data = json.loads(request.body)
-        print(data, file=sys.stdout)
         owner = data.get('owner')
-        print(owner, file=sys.stdout)
         tweet = data.get('tweet')
         text = data.get('text')
-        print(text, file=sys.stdout)
-        print(request.user, file=sys.stdout)
-        print(owner, file=sys.stdout)
         if str(request.user) == str(owner):
-            print('in', file=sys.stdout)
             tweet = Tweet.objects.get(id = tweet)
-            print(tweet, file=sys.stdout)
             tweet.text = text
             tweet.save()
             return JsonResponse({'message': 'Edit successful'})
@@ -109,15 +118,30 @@ def edit(request):
 
 
 def tweets(request, profile, page):
-    if profile != 'all':
-        tweets = Tweet.objects.filter(author=profile).annotate(likes=Count('like')).order_by('-timestamp')
-    else:
+    if profile == 'all':
         tweets = Tweet.objects.all().annotate(likes=Count('like')).order_by('-timestamp')
+    elif profile == 'following':
+        following = Follower.objects.filter(follower = request.user)
+        followingUser = []
+        for user in following:
+            followingUser.append(user.user)
+        tweets = Tweet.objects.filter(author__in = followingUser).annotate(likes=Count('like')).order_by('-timestamp')
+    else:
+        tweets = Tweet.objects.filter(author=profile).annotate(likes=Count('like')).order_by('-timestamp')
     paginator = Paginator(tweets, 10)
     page_number = page
+    
     page_obj = paginator.get_page(page_number)
+    tweetList = []
+    for tweet in page_obj:
+        sTweet = tweet.serialize()
+        sTweet['likes'] = tweet.likes
+        likeStatus = Like.objects.filter(liker = request.user , tweet = tweet.id)
+        if likeStatus:
+            sTweet['likeStatus'] = True
+        tweetList.append(sTweet)
     data = {
-        'tweets':[tweet.serialize() for tweet in page_obj],
+        'tweets':tweetList,
         'has_previous': page_obj.has_previous(),
         'has_next': page_obj.has_next(),
         'number': str(page_obj.number),

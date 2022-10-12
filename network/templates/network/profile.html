@@ -17,9 +17,10 @@
     
             </span>
         </div>
-
-        <script type="text/babel" src="{% static 'network/display_tweets.js' %}"></script>
-        <script type="text/babel">
+        <div id="app"></div>
+        
+        <script type="text/babel" src="{% static 'network/index.js' %}"></script>
+       <!-- <script type="text/babel">
             
             function followStatus(status){
                 let profile = document.querySelector('#profile').dataset.profile;
@@ -39,15 +40,14 @@
             }
             let follow = document.querySelector('#follow')
             let unfollow = document.querySelector('#unfollow')
-            console.log(follow)
-            console.log(unfollow)
             if (follow && unfollow) {
                 follow.addEventListener('click', () => followStatus('follow'));
                 unfollow.addEventListener('click', () => followStatus('unfollow'));
             }
             console.log(`User: ${document.querySelector('#tweets').dataset.user}`)
-            display_tweets(document.querySelector('#profile').dataset.profile,1); 
-        </script>
+            //display_t(document.querySelector('#profile').dataset.profile,1); 
+        </script>-->
+        
 
     </div>
     

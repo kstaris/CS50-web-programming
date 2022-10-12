@@ -1,50 +1,61 @@
-function display_tweets(profile, page){ 
-    document.querySelector('#tweets').innerHTML='';
-    document.querySelector('.step-links').innerHTML='';
-    fetch(`/tweets/${profile}/${page}`)
-    .then(response => response.json())
-    .then(tweets => {
-        let tweetsP = JSON.parse(tweets);
-        tweetsP['tweets'].forEach( function(cTweet) {
-            const user_id = JSON.parse(document.getElementById('user_id').textContent);
-            display_tweet(cTweet, user_id)
-        }); 
-        if (tweetsP['has_previous']){
-            let first = document.createElement('button');
-            let previous = document.createElement('button');
-            first.innerHTML = "first";
-            first.id = 'first';
-            previous.innerHTML = "previous";
-            previous.id = 'previous';
-            document.querySelector('.step-links').appendChild(first);
-            document.querySelector('.step-links').appendChild(previous);
-            previous = document.querySelector('#previous');
-            previous.addEventListener('click', () => display_tweets('all', tweetsP.previous_page_number));
-            first = document.querySelector('#first');
-            first.addEventListener('click', () => display_tweets('all', 1));
-        }
-          
-        let current = document.createElement('span');
-        current.innerHTML = `Page ${ tweetsP.number } of ${ tweetsP.num_pages }.`;
-        document.querySelector('.step-links').appendChild(current);
-        if (tweetsP['has_next']){
-            let next = document.createElement('button');
-            let last = document.createElement('button');
-            next.innerHTML = 'next';
-            next.id ='next';
-            last.innerHTML = 'last';
-            last.id = 'last';
-            document.querySelector('.step-links').appendChild(next);
-            document.querySelector('.step-links').appendChild(last);
-            next = document.querySelector('#next');
-            next.addEventListener('click', () => display_tweets('all', tweetsP.next_page_number));
-            last = document.querySelector('#last');
-            last.addEventListener('click', () => display_tweets('all', tweetsP.num_pages));   
-        }
-        return false;
-    })  
-} 
 
+const user_id = JSON.parse(document.getElementById('user_id').textContent);
+
+function display_t(profile, page){
+    function fetchTweets(pageN){
+        fetch(`/tweets/${profile}/${pageN}`)
+        .then(response => response.json())
+        .then(tweetsL => { 
+            let tweetsP = JSON.parse(tweetsL);
+            setPage(tweetsP)
+    })}
+
+    const [pageTw, setPage] = React.useState('');
+    React.useEffect(() => {
+        fetchTweets(1);
+    }, [])
+    
+    function previous() {
+        if (pageTw.has_previous){
+            console.log(pageTw.next_page_number)
+            return(
+                <span>
+                    <button onClick={() => fetchTweets(1)}>First</button>
+                    <button onClick={() => fetchTweets(pageTw.previous_page_number)}>Previous</button>
+                </span>
+            )
+        }
+    }
+
+    function next() {
+        if (pageTw.has_next){
+            return(
+                <span>
+                    <button onClick={() => fetchTweets(pageTw.next_page_number[0])}>Next</button>
+                    <button onClick={() => fetchTweets( pageTw.num_pages)}>Last</button>
+                </span>
+            )
+        }
+    }
+
+    try {
+        return(
+            <div>{pageTw.tweets.map((cTweet) => display(cTweet))}
+            <div className='pagination'>
+                <span className='step-links'>
+                    {previous()}
+                    <span>Page {pageTw.number} of {pageTw.num_pages}</span>
+                    {next()}
+                </span>
+            </div>
+            </div>
+        )
+    }
+    catch(err) {
+        console.log('unsucessful')
+    }
+} 
+    
 function likeF(tweet){
     fetch('/like', {
         method: 'POST',
@@ -59,6 +70,34 @@ function likeF(tweet){
     
 }
 
+
+function display(cTweet){
+    
+    function edit(){
+        return(
+            <div></div>
+        )
+    }
+    function editBtn(){
+        if (cTweet.authorId == user_id){
+            return (
+            <button onClick={edit()}>Edit</button>
+        )}
+        else {
+            return 
+        }
+    }
+    return (
+        <div>
+            <a href={`/profile/${cTweet.author}`}>{cTweet.author}</a>
+            <span>{cTweet.timestamp}</span>
+            <div>{`text${cTweet.id}`}</div>
+            <span id={`ID${cTweet.id}`}>Likes: {cTweet.likes}</span>
+            <button onClick={() => likeF(cTweet.id)}>Like</button>
+            {editBtn()}  
+        </div>
+    )
+}
 function display_tweet(cTweet, profile){
     let tweet = document.createElement('div');
     let author = document.createElement('a');
