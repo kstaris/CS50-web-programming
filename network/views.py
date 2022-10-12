@@ -136,9 +136,10 @@ def tweets(request, profile, page):
     for tweet in page_obj:
         sTweet = tweet.serialize()
         sTweet['likes'] = tweet.likes
-        likeStatus = Like.objects.filter(liker = request.user , tweet = tweet.id)
-        if likeStatus:
-            sTweet['likeStatus'] = True
+        if request.user.is_authenticated:
+            likeStatus = Like.objects.filter(liker = request.user , tweet = tweet.id)
+            if likeStatus:
+                sTweet['likeStatus'] = True
         tweetList.append(sTweet)
     data = {
         'tweets':tweetList,

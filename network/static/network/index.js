@@ -3,22 +3,22 @@ function App(){
 
     const [profile, setProfile] = React.useState(findProf());
     const user_id = JSON.parse(document.getElementById('user_id').textContent);
-
+    //console.log(user_id)
     function findProf(){
         if (window.location.pathname != '/'){
-            console.log(window.location.pathname.split('/').pop())
              return window.location.pathname.split('/').pop();
         } else {
-            return 'all'
-        }
+            return 'all';
+        };
+    }
+    if (document.querySelector('#following')){
+        document.querySelector('#following').addEventListener('click', () => {
+            setProfile('following');
+            fetchTweets(1);
+        })
+    
     }
     
-    document.querySelector('#following').addEventListener('click', () => {
-        console.log('following set')
-        setProfile('following');
-        fetchTweets(1);
-    })
-
     function SaveTweet(){
         let tex = document.querySelector('#tweetText').value;
         fetch('/', {
@@ -172,7 +172,15 @@ function App(){
         function handleC() {
             setProfile(cTweet.authorId);
             fetchTweets(1);
-          }        
+        }
+          
+        function likeBtn(){
+            if (user_id){
+                return(
+                    <button id={`heart${cTweet.id}`} className={heartClick()} onClick={() => {likeF(cTweet.id), heartClick()}}>❤️</button>
+                )
+            }
+        }
         return (
             <div className='tweet'>
                 <button className='author' onClick={() => {handleC()}}>{cTweet.author}</button>
@@ -180,7 +188,7 @@ function App(){
                 <span className='time'>{cTweet.timestamp}</span>
                 <div id={`text${cTweet.id}`}>{cTweet.text}</div>
                 <span id={`ID${cTweet.id}`}>Likes: {cTweet.likes}</span>
-                <button id={`heart${cTweet.id}`} className={heartClick()} onClick={() => {likeF(cTweet.id), heartClick()}}>❤️</button>
+                {likeBtn()}
             </div>
         )
     }
